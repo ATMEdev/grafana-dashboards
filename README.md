@@ -1,81 +1,108 @@
-# Grafana Dashboards
+# HLF SmartBFT Dashboard
 
-A collection of Grafana dashboards for monitoring and observability.
+Comprehensive monitoring dashboard for Hyperledger Fabric networks using SmartBFT consensus algorithm.
 
-## 📊 Available Dashboards
+## 📊 Overview
 
-| Dashboard | Description | Grafana Labs | Documentation |
-|-----------|-------------|--------------|---------------|
-| [HLF SmartBFT](./dashboards/hlf-smartbft/) | Hyperledger Fabric SmartBFT consensus monitoring | [TBD] | [📖 Docs](./dashboards/hlf-smartbft/README.md) |
+This dashboard provides detailed insights into SmartBFT consensus performance, transaction processing, and network health for Hyperledger Fabric deployments.
 
-## 🚀 Quick Start
+**[Grafana Labs link](https://grafana.com/grafana/dashboards/23516-hlf-smartbft-dashboard/)** 
 
-### Import from Grafana Labs
-1. Go to [Grafana Labs Dashboards](https://grafana.com/grafana/dashboards/)
-2. Search for the dashboard name
-3. Copy dashboard ID and import in your Grafana instance
+## ✨ Features
 
-### Import from Repository
-1. Navigate to the dashboard folder
-2. Download the `dashboard.json` file
-3. Open Grafana → Dashboards → Import
-4. Upload the JSON file or paste the content
-5. Select your data source and configure variables
+### View Metrics
+- **View Decisions**: Tracks consensus decisions made by SmartBFT
+- **Leader ID**: Current consensus leader identification
+- **View Number**: Current view in the consensus process
+- **Batch Processing**: Transaction batching and processing rates
+- **Sequence Numbers**: Proposal sequence tracking within views
 
-## 📋 General Requirements
+### Viewchange and Sync
+- **Current/Next/Real Views**: View transition monitoring
+- **Sync Performance**: Node synchronization metrics and timing
+- **Reconfiguration**: Network reconfiguration request tracking
 
-### Data Sources
-- **Prometheus**: Required for most dashboards
-- Ensure your monitoring stack scrapes the necessary metrics
+### Pool Management
+- **Request Pool Size**: Number of pending consensus requests
+- **Pool Latency**: Time requests spend in the pool
+- **Forward Requests**: Leader forwarding statistics
+- **Pool Failures**: Failed request insertion tracking with reasons
+- **Timeout Handling**: Second timeout request monitoring
 
+### System Health
+- **WAL Files**: Write-Ahead Log file count monitoring
+- **Blacklist**: Node blacklisting and exclusion tracking
 
-## 📁 Repository Structure
+## 📋 Requirements
+
+### Data Source
+- **Prometheus** with SmartBFT metrics collection
+
+### Required Metrics
+The dashboard expects these Prometheus metric families:
 
 ```
-grafana-dashboards/
-├── README.md                    # This file
-├── LICENSE                      # Apache 2.0 License
-└── dashboards/                  # Dashboard collection
+# View and consensus metrics
+consensus_smartbft_view_decisions
+consensus_smartbft_view_leader_id
+consensus_smartbft_view_number
+consensus_smartbft_view_count_batch_all
+consensus_smartbft_view_count_txs_all
+consensus_smartbft_view_count_txs_in_batch
+consensus_smartbft_view_size_batch
+consensus_smartbft_view_proposal_sequence
+consensus_smartbft_view_latency_batch_processing_bucket
 
+# Viewchange metrics
+consensus_smartbft_viewchange_current_view
+consensus_smartbft_viewchange_next_view
+consensus_smartbft_viewchange_real_view
+consensus_smartbft_consensus_latency_sync_sum
+consensus_smartbft_consensus_latency_sync_count
+consensus_smartbft_consensus_reconfig
+
+# Pool metrics
+consensus_smartbft_pool_count_of_elements
+consensus_smartbft_pool_count_of_elements_all
+consensus_smartbft_pool_latency_of_elements_sum
+consensus_smartbft_pool_latency_of_elements_count
+consensus_smartbft_pool_count_of_fail_add_request
+consensus_smartbft_pool_count_leader_forward_request
+consensus_smartbft_pool_count_of_delete_request
+consensus_smartbft_pool_count_timeout_two_step
+
+# System metrics
+consensus_smartbft_wal_count_of_files
+consensus_smartbft_blacklist_count
+consensus_smartbft_node_id_in_blacklist
 ```
 
-## 🤝 Contributing
+### Hyperledger Fabric Setup
+- Fabric network with SmartBFT consensus enabled
+- Prometheus metrics exporter configured
+- Proper metric scraping intervals (recommended: 15-30s)
 
-We welcome contributions! Please follow these guidelines:
+## 🚀 Installation
 
-1. **Fork the repository**
-2. **Create a feature branch**
-   ```bash
-   git checkout -b feature/new-dashboard
-   ```
-3. **Add your dashboard**
-    - Create a new folder in `dashboards/`
-    - Include `dashboard.json` and `README.md`
-    - Add screenshots in `screenshots/` subfolder
-4. **Update main README** (add entry to the table above)
-5. **Submit a pull request**
+### From Grafana Labs
+1. Visit [Grafana Labs](https://grafana.com/grafana/dashboards/23516-hlf-smartbft-dashboard/)
+2. Search for "HLF SmartBFT"
+3. In your Grafana: Import → Paste ID → Import
+4. Select your Prometheus data source
 
-### Dashboard Guidelines
-- Use descriptive panel titles and descriptions
-- Follow consistent naming conventions
-- Include template variables for filtering
-- Test with different data sources
-- Provide comprehensive documentation
-- Include screenshots showing key features
+## 🔧 Configuration
 
-### File Naming
-- Dashboard files: `dashboard.json`
-- Documentation: `README.md`
-- Screenshots: `overview.png`, `details.png`, etc.
+### Template Variables
+The dashboard uses three main variables for filtering:
 
-
-## 📝 License
-
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
-
+| Variable | Description | Example Values |
+|----------|-------------|----------------|
+| `$cluster` | Target Fabric cluster | `prod-cluster`, `test-env` |
+| `$instance` | Specific orderer instances | `orderer0.org1.com:7050` |
+| `$channel` | Fabric channels to monitor | `mychannel`, `systemchannel` |
 
 ---
 
-**Maintained by:** ATME
-
-**Last Updated:** 02.06.2025
+**Dashboard Version:** 1.0.0
+**Compatible Fabric Versions:** 3.0+  
+**Last Updated:** 06.06.2025
